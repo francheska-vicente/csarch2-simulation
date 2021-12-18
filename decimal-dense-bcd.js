@@ -57,7 +57,7 @@ function convertToDenselyPackedBCD(packedBCD) {
 
     /**
      * Gets the associated binary digit based on the letter position
-     * Letter positions is based on Binary coded decimal slide for week3a
+     * Letter positions is based on Binary coded decimal slide from week3a
      * @param {String} letter the letter to get the associated binary digit from
      * @returns {String} representing the binary digit from the specified letter position
      */
@@ -69,6 +69,7 @@ function convertToDenselyPackedBCD(packedBCD) {
         if (![...'abcdefghijkm'].some((srcLetter) => srcLetter == letter))
             throw 'invalid letter position';
 
+        //offset by another one for 'm' because we skipped l
         const offset = letter == 'm' ? 98 : 97;
         return bcdArray[letter.charCodeAt(0) - offset];
     }
@@ -86,10 +87,12 @@ function convertToPackedBCD(num) {
     const bcd = digits.reduce((previousResult, currentDigit) => {
         const binary = Number(currentDigit).toString(2);
         const paddedBinary = binary.padStart(4, '0');
+
         return `${previousResult}${paddedBinary}`;
     }, '');
 
     return bcd.trim();
 }
 
-console.log(decToDenselyPackedBCD('532'));
+//TODO: change when environment is browser
+module.exports = decToDenselyPackedBCD;
