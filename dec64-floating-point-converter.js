@@ -144,10 +144,10 @@ function getCoefficientContinuation(decimal) {
 }
 
 function calculateFloatDisplacement(decimal) {
-    const [_, afterRadixPoint] = decimal.split('.');
+    const [_, afterRadixPoint] = String(decimal).split('.');
     if (afterRadixPoint == undefined) return 0;
 
     return afterRadixPoint.length;
 }
 
-console.log(decimalToDec64Float('-9876543210123456', -398));
+console.log(decimalToDec64Float(9876543210123456, -200));
