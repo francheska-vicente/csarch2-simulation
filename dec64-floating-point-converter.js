@@ -24,11 +24,23 @@ function decimalToDec64Float(decimal, exponent) {
     if (normalizedExponent > 384 || normalizedExponent < -383)
         return getInfinityRepresentation(normalizedExponent);
 
+    const signBit = getSignBit(normalizedDecimal)
+    const combinationField = getCombinationField(normalizedDecimal, exponentBias)
+    const exponentContinuation = getExponentContinuation(exponentBias)
+    const coefficientContinuation = getCoefficientContinuation(normalizedDecimal)
+
+    const binary1 =   (signBit+combinationField+exponentContinuation).toString()+coefficientContinuation.toString().toString().substring(0,2)
+    const binary2 =   coefficientContinuation.toString().substring(2).split(',').join('');
+
+    const hex1 = parseInt(binary1, 2).toString(16).toUpperCase().padStart(4, '0');
+    const hex2 = parseInt(binary2, 2).toString(16).toUpperCase().padStart(12, '0');
+
     const decimal64Format = {
-        signBit: getSignBit(normalizedDecimal),
-        combinationField: getCombinationField(normalizedDecimal, exponentBias),
-        exponentContinuation: getExponentContinuation(exponentBias),
-        coefficientContinuation: getCoefficientContinuation(normalizedDecimal),
+        signBit: signBit,
+        combinationField: combinationField,
+        exponentContinuation: exponentContinuation,
+        coefficientContinuation: coefficientContinuation,
+        hex: hex1+hex2,
     };
 
     return decimal64Format;
@@ -150,4 +162,10 @@ function calculateFloatDisplacement(decimal) {
     return afterRadixPoint.length;
 }
 
-console.log(decimalToDec64Float(9876543210123456, -200));
+// console.log(decimalToDec64Float(9876543210123456, -200));
+
+// console.log(decimalToDec64Float(1357924680876987, -10));
+
+// console.log(decimalToDec64Float(4.0, 0));
+
+console.log(decimalToDec64Float(-8134, 0));
