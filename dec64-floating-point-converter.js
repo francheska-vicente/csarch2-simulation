@@ -17,8 +17,8 @@ function decimalToDec64Float(decimal, exponent) {
         typeof decimal == 'number'
             ? normalizeDecimal(String(decimal))
             : normalizeDecimal(decimal);
-
-    const normalizedExponent = exponent - calculateFloatDisplacement(decimal);
+    
+    const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)    );
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
 
     if (normalizedExponent > 384 || normalizedExponent < -383)
@@ -135,9 +135,10 @@ function normalizeDecimal(decimal) {
     //remove negative sign
     let normalized = Math.abs(decimal);
     //remove radix point and start padding 0s if necessary
-    normalized = String(normalized).replace('.', '').padStart(16, '0');
+    normalized = String(normalized).replace('.', '').padStart(16, '0').substring(0,16);
     //add negative sign back
     normalized = decimal >= 0 ? normalized : `-${normalized}`;
+    
     return normalized;
 }
 
@@ -156,16 +157,31 @@ function getCoefficientContinuation(decimal) {
 }
 
 function calculateFloatDisplacement(decimal) {
-    const [_, afterRadixPoint] = String(decimal).split('.');
-    if (afterRadixPoint == undefined) return 0;
+    let [beforeRadixPoint, afterRadixPoint] = String(decimal).split('.');
+    beforeRadixPoint = beforeRadixPoint.charAt(0) == '-' ? beforeRadixPoint.substring(1) : beforeRadixPoint;
+
+    //check if decimal only contains 0
+    if (/^0*$/.test(afterRadixPoint))
+        afterRadixPoint = undefined
+    
+    if (afterRadixPoint == undefined){
+        //check if wholenumber is greater than 16
+        if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16;
+        return 0;
+    } else {
+        //check if wholenumber is greater than 16 but has decimal
+        if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16 + afterRadixPoint.length;
+    }
+
+    // if (afterRadixPoint == undefined) return 0;
 
     return afterRadixPoint.length;
 }
 
-// console.log(decimalToDec64Float(9876543210123456, -200));
+// console.log(decimalToDec64Float('9876543210123456', -200));
 
-// console.log(decimalToDec64Float(1357924680876987, -10));
+// console.log(decimalToDec64Float('1357924680876987', -10));
 
-// console.log(decimalToDec64Float(4.0, 0));
+// console.log(decimalToDec64Float('41231234123412341234.12345678', 0));
 
-console.log(decimalToDec64Float(-8134, 0));
+console.log(decimalToDec64Float('-813411111111111111.0001', 0));
