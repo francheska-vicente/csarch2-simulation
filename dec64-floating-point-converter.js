@@ -3,6 +3,9 @@ const decToDenselyPackedBCD = require('./decimal-dense-bcd');
 
 const EXPONENT_BIAS = 398;
 
+// DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
+const ROUNDOFF_DEF = 1;
+
 /**
  * Converts decimal input to its corresponding decimal64 floating point representation
  * based on IEEE-754 2008 standard
@@ -18,6 +21,13 @@ function decimalToDec64Float(decimal, exponent) {
             ? normalizeDecimal(String(decimal))
             : normalizeDecimal(decimal);
     
+    // Remove: for debugging
+    console.log ("NORMALIZED: " + normalizedDecimal);
+    // Rounding-off
+    const decRoundOff = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
+    // Remove: for debugging
+    console.log ("ROUNDED OFF: " + decRoundOff);
+
     const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)    );
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
 
@@ -138,7 +148,7 @@ function normalizeDecimal(decimal) {
     normalized = String(normalized).replace('.', '').padStart(16, '0').substring(0,16);
     //add negative sign back
     normalized = decimal >= 0 ? normalized : `-${normalized}`;
-    
+
     return normalized;
 }
 
@@ -178,10 +188,28 @@ function calculateFloatDisplacement(decimal) {
     return afterRadixPoint.length;
 }
 
+function getRoundedOffNum (decimal, method) {
+    switch (method) {
+        case 1: // Truncation
+            return Math.trunc(decimal / 10) * 10;
+        case 2: // Ceiling
+            return Math.ceil(decimal / 10) * 10;
+        case 3: // Floor
+            return Math.floor(decimal / 10) * 10
+        case 4: // Ties to zero
+            return Math.round(decimal); // Temp
+        case 5: // Ties to even
+            return Math.round(decimal); // Temp
+    }
+}
+
 // console.log(decimalToDec64Float('9876543210123456', -200));
 
 // console.log(decimalToDec64Float('1357924680876987', -10));
 
 // console.log(decimalToDec64Float('41231234123412341234.12345678', 0));
 
-console.log(decimalToDec64Float('-813411111111111111.0001', 0));
+// console.log(decimalToDec64Float('-813411111111111111.0001', 0));
+
+// console.log(decimalToDec64Float('7123654123675431.123', 15));
+
