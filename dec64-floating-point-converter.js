@@ -21,12 +21,14 @@ function decimalToDec64Float(decimal, exponent) {
             ? normalizeDecimal(String(decimal))
             : normalizeDecimal(decimal);
     
-    // Remove: for debugging
-    console.log ("NORMALIZED: " + normalizedDecimal);
+    //TODO: Remove after debugging
+    // console.log ("NORMALIZED: " + normalizedDecimal);
+
     // Rounding-off
     const decRoundOff = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
-    // Remove: for debugging
-    console.log ("ROUNDED OFF: " + decRoundOff);
+    
+    //TODO: Remove after debugging
+    // console.log ("ROUNDED OFF: " + decRoundOff);
 
     const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)    );
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
@@ -189,18 +191,32 @@ function calculateFloatDisplacement(decimal) {
 }
 
 function getRoundedOffNum (decimal, method) {
+    let decTrunc = Math.trunc(decimal / 10) * 10;
+    let decCeil = Math.ceil(decimal / 10) * 10;
+    let decFloor = Math.floor(decimal / 10) * 10
     switch (method) {
         case 1: // Truncation
-            return Math.trunc(decimal / 10) * 10;
+            return decTrunc;
         case 2: // Ceiling
-            return Math.ceil(decimal / 10) * 10;
+            return decCeil;
         case 3: // Floor
-            return Math.floor(decimal / 10) * 10
+            return decFloor;
         case 4: // Ties to zero
-            return Math.round(decimal); // Temp
         case 5: // Ties to even
-            return Math.round(decimal); // Temp
+            return getTies(decCeil, decFloor, method);
     }
+}
+
+function getTies (ceiling, floor, method) {
+    if (decimal % 5 == 0) {
+        if (method == 4)    // Ties to zero
+            // If negative, round down. Otherwise, round up
+            return decimal < 0 ? floor : ceiling;
+        else    // Ties to even (If ceiling is even, round up. Otherwise, round down)
+            return ceiling % 20 == 0 ? ceiling : floor; // temporary value
+    }
+    else    // If it is not a tie
+        return Math.round(decimal);
 }
 
 // console.log(decimalToDec64Float('9876543210123456', -200));
