@@ -25,10 +25,10 @@ function decimalToDec64Float(decimal, exponent) {
      console.log ("NORMALIZED: " + normalizedDecimal);
 
     // Rounding-off
-    roundedDecimal = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
-    
+    roundedDecimal = String(getRoundedOffNum(decimal, normalizedDecimal, ROUNDOFF_DEF));
+
     //TODO: Remove after debugging
-     console.log ("ROUNDEDOFF: " + decRoundOff);
+     console.log ("ROUNDEDOFF: " + roundedDecimal);
 
     const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
