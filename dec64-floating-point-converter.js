@@ -4,7 +4,7 @@ const decToDenselyPackedBCD = require('./decimal-dense-bcd');
 const EXPONENT_BIAS = 398;
 
 // DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
-const ROUNDOFF_DEF = 1;
+const ROUNDOFF_DEF = 4;
 
 /**
  * Converts decimal input to its corresponding decimal64 floating point representation
@@ -22,17 +22,19 @@ function decimalToDec64Float(decimal, exponent) {
             : normalizeDecimal(decimal);
     
     //TODO: Remove after debugging
-    // console.log ("NORMALIZED: " + normalizedDecimal);
+     console.log ("NORMALIZED: " + normalizedDecimal);
 
     // Rounding-off
-    const decRoundOff = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
+    const decRoundOff = getRoundedOffNum(decimal, normalizedDecimal, ROUNDOFF_DEF);
+    //TODO: replace single lined code above to single lined commented code below when rounding is completed
+    // normalizedDecimal = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
     
     //TODO: Remove after debugging
-    // console.log ("ROUNDED OFF: " + decRoundOff);
+     console.log ("ROUNDEDOFF: " + decRoundOff);
 
-    const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)    );
+    const normalizedExponent = exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
-
+    console.log(normalizedExponent);
     if (normalizedExponent > 384 || normalizedExponent < -383)
         return getInfinityRepresentation(normalizedExponent);
 
@@ -124,12 +126,12 @@ function getSignBit(decimal) {
 }
 
 function getCombinationField(decimal, exponent) {
-    //remove negative sign to get the first character digit
+    // Remove negative sign to get the first character digit
     const MSD =
         decimal.charAt(0) == '-' ? decimal.charAt(1) : decimal.charAt(0);
-    //transform msd to binary
+    // Transform msd to binary
     const binaryMSD = Number(MSD).toString(2).padStart(4, '0');
-    //transform expononent to binary
+    // Transform expononent to binary
     const binaryExponent = exponent.toString(2).padStart(10, '0');
 
     if (Number(MSD) <= 7) {
@@ -144,12 +146,22 @@ function getCombinationField(decimal, exponent) {
 }
 
 function normalizeDecimal(decimal) {
-    //remove negative sign
+    // Remove negative sign
     let normalized = Math.abs(decimal);
-    //remove radix point and start padding 0s if necessary
+    // Remove radix point and start padding 0s if necessary
     normalized = String(normalized).replace('.', '').padStart(16, '0').substring(0,16);
-    //add negative sign back
+    // Add negative sign back
     normalized = decimal >= 0 ? normalized : `-${normalized}`;
+
+    return normalized;
+}
+
+function getPass17thDigit(decimal) {
+    // If negative, get the digits only. Otherwise, keep it as is
+    let normalized = decimal.charAt(0) == '-' ? decimal.substring(1) : decimal;
+    // Remove wholenumber
+    normalized = normalized.replace('.', '').padStart(16, '0').substring(16);
+    if (normalized == "") return '0';
 
     return normalized;
 }
@@ -172,60 +184,87 @@ function calculateFloatDisplacement(decimal) {
     let [beforeRadixPoint, afterRadixPoint] = String(decimal).split('.');
     beforeRadixPoint = beforeRadixPoint.charAt(0) == '-' ? beforeRadixPoint.substring(1) : beforeRadixPoint;
 
-    //check if decimal only contains 0
+    // Check if decimal only contains 0
     if (/^0*$/.test(afterRadixPoint))
         afterRadixPoint = undefined
     
     if (afterRadixPoint == undefined){
-        //check if wholenumber is greater than 16
+        // Check if wholenumber is greater than 16
         if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16;
         return 0;
     } else {
-        //check if wholenumber is greater than 16 but has decimal
+        // Check if wholenumber is greater than 16 but has decimal
         if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16 + afterRadixPoint.length;
     }
 
     // if (afterRadixPoint == undefined) return 0;
 
-    return afterRadixPoint.length;
+    return afterRadixPoint.length;  // e.g. 123.456
 }
 
-function getRoundedOffNum (decimal, method) {
-    let decTrunc = Math.trunc(decimal / 10) * 10;
-    let decCeil = Math.ceil(decimal / 10) * 10;
-    let decFloor = Math.floor(decimal / 10) * 10
+function getRoundedOffNum (decimal, normalized, method) {
+    let decTrunc, decCeil, decFloor;
+    // Remove negative sign from unnormalized decimal
+    let tempDec = String(decimal).includes('-') ? String(decimal).slice(1, String(decimal).length) : String(decimal);
+    // If decimal is a fraction and has more than 16 digits as a whole
+    if (tempDec.length > 17) {
+        fullDec = normalized + "." + getPass17thDigit(decimal);
+        //normalized = String((normalized + getPass17thDigit(decimal)) / Math.pow(10, getPass17thDigit(decimal).length));
+        decTrunc = Math.trunc(parseInt(fullDec));
+        decCeil = Number(normalized) + 1;   // decCeil = Math.ceil(Number(normalized));
+        decFloor = Math.floor(parseInt(fullDec));
+    }
+    // If decimal is a whole number
+    else {
+        decTrunc = Math.trunc(normalized / 10) * 10;
+        decCeil = Math.ceil(normalized / 10) * 10;
+        decFloor = Math.floor(normalized / 10) * 10;
+    }
+    
     switch (method) {
-        case 1: // Truncation
-            return decTrunc;
-        case 2: // Ceiling
-            return decCeil;
-        case 3: // Floor
-            return decFloor;
-        case 4: // Ties to zero
-        case 5: // Ties to even
-            return getTies(decCeil, decFloor, method);
+        case 1: return decTrunc;
+        case 2: return decCeil;
+        case 3: return decFloor;
+        case 4: case 5: return getTies(decCeil, decFloor, method, normalized);
     }
 }
 
-function getTies (ceiling, floor, method) {
-    if (decimal % 5 == 0) {
+function getTies (ceiling, floor, method, decimal) {
+    if (getPass17thDigit(decimal) % 5 == 0) {  // If it is a tie
         if (method == 4)    // Ties to zero
             // If negative, round down. Otherwise, round up
             return decimal < 0 ? floor : ceiling;
         else    // Ties to even (If ceiling is even, round up. Otherwise, round down)
             return ceiling % 20 == 0 ? ceiling : floor; // temporary value
     }
-    else    // If it is not a tie
+    else    // Round to nearest number
         return Math.round(decimal);
 }
 
-// console.log(decimalToDec64Float('9876543210123456', -200));
+// Negative exponent
+//console.log(decimalToDec64Float('9876543210123456', -200));
+//console.log(decimalToDec64Float('1357924680876987', -10));
 
-// console.log(decimalToDec64Float('1357924680876987', -10));
+// -18.4
+//console.log(decimalToDec64Float('-813411111111111111.0001', 0));
 
-// console.log(decimalToDec64Float('41231234123412341234.12345678', 0));
+// 20.8
+//console.log(decimalToDec64Float('41231234123412341234.12345678', 0));     //4123123412341234|1234.12345678
 
-// console.log(decimalToDec64Float('-813411111111111111.0001', 0));
+// 18.1
+//console.log (decimalToDec64Float('123456789123456789.1', 5));
 
-// console.log(decimalToDec64Float('7123654123675431.123', 15));
+// 16.3
+//console.log(decimalToDec64Float('7123654123675431.123', 15));
 
+// 14.2
+//console.log (decimalToDec64Float('12345678912345.67', 5));
+
+// 12
+//console.log(decimalToDec64Float('123456789123', 5));
+
+// 16
+//console.log(decimalToDec64Float('1234567891234567', 5));
+
+// 22 X
+//console.log(decimalToDec64Float('1234567891234567891234', 5));
