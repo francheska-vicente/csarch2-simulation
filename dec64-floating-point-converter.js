@@ -4,7 +4,7 @@ const decToDenselyPackedBCD = require('./decimal-dense-bcd');
 const EXPONENT_BIAS = 398;
 
 // DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
-const ROUNDOFF_DEF = 4;
+const ROUNDOFF_DEF = 1;
 
 /**
  * Converts decimal input to its corresponding decimal64 floating point representation
@@ -25,9 +25,7 @@ function decimalToDec64Float(decimal, exponent) {
      console.log ("NORMALIZED: " + normalizedDecimal);
 
     // Rounding-off
-    const decRoundOff = getRoundedOffNum(decimal, normalizedDecimal, ROUNDOFF_DEF);
-    //TODO: replace single lined code above to single lined commented code below when rounding is completed
-    // normalizedDecimal = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
+    roundedDecimal = getRoundedOffNum(normalizedDecimal, ROUNDOFF_DEF);
     
     //TODO: Remove after debugging
      console.log ("ROUNDEDOFF: " + decRoundOff);
@@ -38,10 +36,10 @@ function decimalToDec64Float(decimal, exponent) {
     if (normalizedExponent > 384 || normalizedExponent < -383)
         return getInfinityRepresentation(normalizedExponent);
 
-    const signBit = getSignBit(normalizedDecimal)
-    const combinationField = getCombinationField(normalizedDecimal, exponentBias)
+    const signBit = getSignBit(roundedDecimal)
+    const combinationField = getCombinationField(roundedDecimal, exponentBias)
     const exponentContinuation = getExponentContinuation(exponentBias)
-    const coefficientContinuation = getCoefficientContinuation(normalizedDecimal)
+    const coefficientContinuation = getCoefficientContinuation(roundedDecimal)
 
     const binary1 =   (signBit+combinationField+exponentContinuation).toString()+coefficientContinuation.toString().toString().substring(0,2)
     const binary2 =   coefficientContinuation.toString().substring(2).split(',').join('');
@@ -267,7 +265,7 @@ function getTies (ceiling, floor, method, decimal) {
 //console.log(decimalToDec64Float('123456789123', 5));
 
 // 16
-//console.log(decimalToDec64Float('1234567891234567', 5));
+console.log(decimalToDec64Float('1234567891234567', 5));
 
 // 22 X
 //console.log(decimalToDec64Float('1234567891234567891234', 5));
