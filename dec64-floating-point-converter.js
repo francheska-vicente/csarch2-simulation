@@ -147,7 +147,8 @@ function getCombinationField(decimal, exponent) {
 
 function normalizeDecimal(decimal) {
     // Remove negative sign
-    let normalized = Math.abs(decimal);
+    //let normalized = Math.abs(decimal);   // Math.abs automatically rounds numbers above >16 so it's changed to the code below
+    let normalized = String(decimal).includes('-') ? String(decimal).slice(1, String(decimal).length) : String(decimal);
     // Remove radix point and start padding 0s if necessary
     normalized = String(normalized).replace('.', '').padStart(16, '0').substring(0,16);
     // Add negative sign back
@@ -194,7 +195,10 @@ function calculateFloatDisplacement(decimal) {
         return 0;
     } else {
         // Check if wholenumber is greater than 16 but has decimal
-        if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16 + afterRadixPoint.length;
+        //if (beforeRadixPoint.length > 16) return beforeRadixPoint.length - 16 + afterRadixPoint.length;
+        if (beforeRadixPoint.length > 16) return 16 - beforeRadixPoint.length;  // e.g. 123456789123456789.123 = 1234567891234567.89123
+        if (beforeRadixPoint.length == 16) return 0;    // e.g. 1234567891234567.89
+        if (beforeRadixPoint.length < 16 && beforeRadixPoint.length + afterRadixPoint.length >= 16) return 16 - beforeRadixPoint.length;   // e.g. 123.456789123456789123 or 12345.6789123456789
     }
 
     // if (afterRadixPoint == undefined) return 0;
@@ -206,12 +210,11 @@ function getRoundedOffNum (decimal, normalized, method) {
     let decTrunc, decCeil, decFloor;
     // Remove negative sign from unnormalized decimal
     let tempDec = String(decimal).includes('-') ? String(decimal).slice(1, String(decimal).length) : String(decimal);
-    // If decimal is a fraction and has more than 16 digits as a whole
+    // If decimal/fraction has more than 16 digits as a whole (excluding negative sign)
     if (tempDec.length > 17) {
         fullDec = normalized + "." + getPass17thDigit(decimal);
-        //normalized = String((normalized + getPass17thDigit(decimal)) / Math.pow(10, getPass17thDigit(decimal).length));
         decTrunc = Math.trunc(parseInt(fullDec));
-        decCeil = Number(normalized) + 1;   // decCeil = Math.ceil(Number(normalized));
+        decCeil = Number(normalized) + 1;
         decFloor = Math.floor(parseInt(fullDec));
     }
     // If decimal is a whole number
