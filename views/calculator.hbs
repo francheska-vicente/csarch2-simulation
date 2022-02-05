@@ -1,15 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 
 <head>
     <title> Decimal-64 Floating Point Converter </title>
 
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="/js/calculator.js"></script>
 </head>
 
-<body>
-    
+<body class="h-100">
+    <div class="d-flex flex-row justify-content-center flex-fill h-100">
+        <div class="d-flex flex-row py-5 h-100">
+            <div class="row p-5 ">
+
+                <div class="col-4 container-fluid shadow-sm bg-light rounded-sm p-5 d-flex flex-column align-self-center h-100">
+                    <h1 class="text-center">Decimal-64 Floating Point Calculator</h1>
+                    <hr>
+                    {{!-- INPUT --}}
+                    <div class="row">
+                        <div class="col-7 form-group my-3">
+                            <label for="decimal"><strong>Decimal Value</strong></label>
+                            <input type="number" class="form-control form-control-lg" id="decimal" name="decimal">
+                            <div id="decimal-help" class="form-text">chuchu</div>
+                        </div>
+                        <div class="col-5 form-group my-3">
+                            <label for="decimal"><strong>Exponent</strong></label>
+                            <input type="number" class="form-control form-control-lg" id="decimal" name="decimal">
+                            <div id="decimal-help" class="form-text">chuchu</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label><strong>Rounding Off Method</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rounding" id="round-1" checked>
+                            <label class="form-check-label" for="round-1">
+                                Truncation
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rounding" id="round-2">
+                            <label class="form-check-label" for="round-2">
+                                Round-up or Ceiling
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rounding" id="round-3">
+                            <label class="form-check-label" for="round-3">
+                                Round-down or Floor
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rounding" id="round-4">
+                            <label class="form-check-label" for="round-4">
+                                Ties away from Zero
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rounding" id="round-5">
+                            <label class="form-check-label" for="round-5">
+                                Ties to Even
+                            </label>
+                        </div>
+                        <div id="decimal-help" class="form-text">chuchu</div>
+                    </div>
+                </div>
+
+                <div class="col-7 container-fluid shadow-sm bg-light rounded-sm p-5 d-flex flex-column align-self-center h-100">
+                    {{!-- OUTPUT --}}
+                    <h4>Convert 127.0x10<sup>5</sup> using Truncation Round Off Method</h4>
+                    <div class="my-3">
+                        <label><strong>Binary</strong></label>
+                        <div class="row px-2">
+                            <input type="text" class="col form-control-lg" id="binary-output-sign" disabled>
+                            <input type="text" class="col-3 form-control-lg" id="binary-output-expo" disabled>
+                            <input type="text" class="col-7 form-control-lg" id="binary-output-frac" disabled>
+                        </div>
+                        <div class="row px-2">
+                            <div for="binary-output-sign" class="col form-text">Sign Bit</div>
+                            <div for="binary-output-expo" class="col-3 form-text">Exponent</div>
+                            <div for="binary-output-frac" class="col-7 form-text">Fraction / Mantissa</div>
+                        </div>
+                    </div>
+
+                    <div class="my-3">
+                        <label for="hex-output"><strong>Hexadecimal</strong></label>
+                        <div class="row px-2">
+                            <input type="text" class="col form-control-lg" id="hex-output" disabled>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
