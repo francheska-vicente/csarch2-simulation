@@ -16,7 +16,7 @@ hbs.registerPartials(path.join(__dirname, 'views/partials'));
 
 app.use('/', routes);
 
-app.listen(port, hostname, function () {
+app.listen(port, function () {
     console.log(
         `Server is running at http://${hostname}:${port}`
     );
