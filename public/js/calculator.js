@@ -43,6 +43,7 @@ function computeOutput() {
     if (validateInput()) {
         let decimal64Format = decimalToDec64Float($('#input-significand').val(), $('#input-exponent').val());
 
+        console.log(decimal64Format)
         console.log(decimal64Format.coefficientContinuation.join(''))
 
         $('#binary-output').val(
@@ -71,8 +72,8 @@ function maskOutput() {
     $('#binary-output-expo').unmask();
     $('#binary-output-coef').unmask();
     $('#binary-output-comb').mask('00 000');
-    $('#binary-output-expo').mask('0000 0000');
-    $('#binary-output-coef').mask('0000000000 0000000000 0000000000 0000000000 0000000000');
+    $('#binary-output-expo').mask('AAAA AAAA');
+    $('#binary-output-coef').mask('AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA');
 }
 
 function getSignificand() {
