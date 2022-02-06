@@ -1,6 +1,3 @@
-//TODO: change require to import when in browser
-const decToDenselyPackedBCD = require('./decimal-dense-bcd');
-
 const EXPONENT_BIAS = 398;
 
 // DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
@@ -54,7 +51,7 @@ function decimalToDec64Float(decimal, exponent) {
         coefficientContinuation: coefficientContinuation,
         hex: hex1+hex2,
     };
-
+    console.log(decimal64Format)
     return decimal64Format;
 }
 
@@ -265,7 +262,7 @@ function getTies (ceiling, floor, method, decimal) {
 //console.log(decimalToDec64Float('123456789123', 5));
 
 // 16
-console.log(decimalToDec64Float('1234567891234567', 5));
+//console.log(decimalToDec64Float('1234567891234567', 5));
 
 // 22 X
 //console.log(decimalToDec64Float('1234567891234567891234', 5));

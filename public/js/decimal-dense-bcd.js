@@ -93,6 +93,3 @@ function convertToPackedBCD(num) {
 
     return bcd.trim();
 }
-
-//TODO: change when environment is browser
-module.exports = decToDenselyPackedBCD;
