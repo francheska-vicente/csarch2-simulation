@@ -9,6 +9,8 @@
 
     <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="/js/decimal-dense-bcd.js"></script>
+    <script type="text/javascript" src="/js/dec64-floating-point-converter.js"></script>
     <script type="text/javascript" src="/js/calculator.js"></script>
 </head>
 
@@ -94,15 +96,18 @@
                         <label><strong>Binary Representation</strong></label>
                         <div class="row px-2">
                             <input type="text" class="mx-1 col form-control-lg" id="binary-output-sign" disabled>
+                            <input type="text" class="mx-1 col-2 form-control-lg" id="binary-output-comb" disabled>
                             <input type="text" class="mx-1 col-3 form-control-lg" id="binary-output-expo" disabled>
-                            <input type="text" class="mx-1 col-7 form-control-lg" id="binary-output-frac" disabled>
+                            <input type="text" class="mx-1 col-6 form-control-lg" id="binary-output-coef" disabled>
                         </div>
                         <div class="row px-2">
                             <div for="binary-output-sign" class="mx-1 col form-text">Sign Bit</div>
-                            <div for="binary-output-expo" class="mx-1 col-3 form-text">Exponent</div>
-                            <div for="binary-output-frac" class="mx-1 col-7 form-text">Fraction / Mantissa</div>
+                            <div for="binary-output-comb" class="mx-1 col-2 form-text">Combination Field</div>
+                            <div for="binary-output-expo" class="mx-1 col-3 form-text">Exponent Continuation</div>
+                            <div for="binary-output-coef" class="mx-1 col-6 form-text">Coefficient Continuation</div>
                         </div>
                     </div>
+                    <input type="text" id="binary-output" hidden>
                     <button class="ms-auto clipboard-button w-25" onclick="copyToClipboard('BIN')">Copy to Clipboard</button>
 
                     <hr>
