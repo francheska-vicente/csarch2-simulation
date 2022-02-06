@@ -12,25 +12,30 @@
     <script type="text/javascript" src="/js/calculator.js"></script>
 </head>
 
-<body class="h-100">
-    <div class="d-flex flex-row justify-content-center flex-fill h-100">
-        <div class="d-flex flex-row py-5 h-100">
-            <div class="row p-5 ">
+<body>
+    <div class="d-flex flex-row justify-content-center flex-fill">
+        <div class="d-flex flex-column py-5">
+            <div class="container-fluid shadow-sm p-2 d-flex flex-column align-self-center">
+                <h1 class="text-center">Decimal-64 Floating Point Calculator</h1>
+            </div>
 
-                <div class="col-4 container-fluid shadow-sm bg-light rounded-sm p-5 d-flex flex-column align-self-center h-100">
-                    <h1 class="text-center">Decimal-64 Floating Point Calculator</h1>
+            <br>
+
+            <div class="d-flex flex-row flex-wrap p-5">
+                <div class="flex-fill mx-4 mb-5 shadow-sm p-5 d-flex flex-column align-self-center" id="input-div">
+                    <h2 class="text-center m-0">INPUT</h2>
                     <hr>
                     {{!-- INPUT --}}
                     <div class="row">
                         <div class="col-7 form-group my-3">
-                            <label for="decimal"><strong>Decimal Value</strong></label>
-                            <input type="number" class="form-control form-control-lg" id="decimal" name="decimal">
-                            <div id="decimal-help" class="form-text">chuchu</div>
+                            <label for="input-significand"><strong>Significand</strong></label>
+                            <input type="text" class="form-control form-control-lg" id="input-significand">
+                            <div id="input-significand-help" class="form-text">e.g. 127.0 in 127.0x10<sup>5</sup> or NaN</div>
                         </div>
                         <div class="col-5 form-group my-3">
-                            <label for="decimal"><strong>Exponent</strong></label>
-                            <input type="number" class="form-control form-control-lg" id="decimal" name="decimal">
-                            <div id="decimal-help" class="form-text">chuchu</div>
+                            <label for="input-exponent"><strong>Exponent (Base-10)</strong></label>
+                            <input type="number" class="form-control form-control-lg" id="input-exponent">
+                            <div id="input-exponent-help" class="form-text">e.g. 5 in 127.0x10<sup>5</sup></div>
                         </div>
                     </div>
 
@@ -66,36 +71,63 @@
                                 Ties to Even
                             </label>
                         </div>
-                        <div id="decimal-help" class="form-text">chuchu</div>
+                        <div id="decimal-help" class="form-text">
+                            chuchu
+                        </div>
                     </div>
+
+                    <br>
+                    <button id="reset-button" onclick="loadExampleData()">Reset</button>
                 </div>
 
-                <div class="col-7 container-fluid shadow-sm bg-light rounded-sm p-5 d-flex flex-column align-self-center h-100">
+                <div class="flex-fill mx-4 mb-5 shadow-sm p-5 d-flex flex-column align-self-center" id="output-div">
+                    <h2 class="text-center m-0">OUTPUT</h2>
+                    <hr>
                     {{!-- OUTPUT --}}
-                    <h4>Convert 127.0x10<sup>5</sup> using Truncation Round Off Method</h4>
+                    <h4 class="text-center m-0">Convert 
+                        <span id="dec-preview">_____</span><sup id="exp-preview">__</sup> 
+                        using 
+                        <span id="rom-preview">Truncation</span> 
+                        Round Off Method</h4>
+                    <hr>
                     <div class="my-3">
-                        <label><strong>Binary</strong></label>
+                        <label><strong>Binary Representation</strong></label>
                         <div class="row px-2">
-                            <input type="text" class="col form-control-lg" id="binary-output-sign" disabled>
-                            <input type="text" class="col-3 form-control-lg" id="binary-output-expo" disabled>
-                            <input type="text" class="col-7 form-control-lg" id="binary-output-frac" disabled>
+                            <input type="text" class="mx-1 col form-control-lg" id="binary-output-sign" disabled>
+                            <input type="text" class="mx-1 col-3 form-control-lg" id="binary-output-expo" disabled>
+                            <input type="text" class="mx-1 col-7 form-control-lg" id="binary-output-frac" disabled>
                         </div>
                         <div class="row px-2">
-                            <div for="binary-output-sign" class="col form-text">Sign Bit</div>
-                            <div for="binary-output-expo" class="col-3 form-text">Exponent</div>
-                            <div for="binary-output-frac" class="col-7 form-text">Fraction / Mantissa</div>
+                            <div for="binary-output-sign" class="mx-1 col form-text">Sign Bit</div>
+                            <div for="binary-output-expo" class="mx-1 col-3 form-text">Exponent</div>
+                            <div for="binary-output-frac" class="mx-1 col-7 form-text">Fraction / Mantissa</div>
                         </div>
                     </div>
+                    <button class="ms-auto clipboard-button w-25" onclick="copyToClipboard('BIN')">Copy to Clipboard</button>
 
+                    <hr>
                     <div class="my-3">
-                        <label for="hex-output"><strong>Hexadecimal</strong></label>
+                        <label for="hex-output"><strong>Hexadecimal Format</strong></label>
                         <div class="row px-2">
                             <input type="text" class="col form-control-lg" id="hex-output" disabled>
                         </div>
                     </div>
-                </div>
+                    <button class="ms-auto clipboard-button w-25" onclick="copyToClipboard('HEX')">Copy to Clipboard</button>
 
+                    <hr>
+                    <button class="clipboard-button" onclick="saveAsText()">Save Computation as Text File (.txt)</button>
+                </div>
+                
             </div>
+
+            <footer>
+                <div class="text-center">
+                    <strong>CSARCH2 S13</strong>
+                </div>
+                <div class="text-center">
+                    EDRALIN | EGUARAS | MARCELO | SY | UY | VICENTE | VISTA
+                </div>
+            </footer>
         </div>
     </div>
 </body>
