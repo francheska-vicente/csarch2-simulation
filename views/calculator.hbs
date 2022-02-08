@@ -9,6 +9,7 @@
 
     <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/js/decimal-dense-bcd.js"></script>
     <script type="text/javascript" src="/js/dec64-floating-point-converter.js"></script>
     <script type="text/javascript" src="/js/calculator.js"></script>
@@ -108,7 +109,7 @@
                         </div>
                     </div>
                     <input type="text" id="binary-output" hidden>
-                    <button class="ms-auto clipboard-button w-25" onclick="copyToClipboard('BIN')">Copy to Clipboard</button>
+                    <button class="ms-auto clipboard-button w-25" id="binary-copy" onclick="copyToClipboard('BIN')">Copy to Clipboard</button>
 
                     <hr>
                     <div class="my-3">
@@ -117,10 +118,7 @@
                             <input type="text" class="col form-control-lg" id="hex-output" disabled>
                         </div>
                     </div>
-                    <button class="ms-auto clipboard-button w-25" onclick="copyToClipboard('HEX')">Copy to Clipboard</button>
-
-                    <hr>
-                    <button class="clipboard-button" onclick="saveAsText()">Save Computation as Text File (.txt)</button>
+                    <button class="ms-auto clipboard-button w-25" id="hex-copy" onclick="copyToClipboard('HEX')">Copy to Clipboard</button>
                 </div>
                 
             </div>

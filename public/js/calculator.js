@@ -29,12 +29,12 @@ function initDisplay() {
         computeOutput();
         maskOutput();
     });
+
+    $('[data-bs-toggle="popover"]').popover();
 }
 
 function validateInput() {
     if (!isNaN($('#input-significand').val()) && !isNaN($('#input-exponent').val()))
-        return true;
-    else if ($('#input-significand').val() === 'NaN')
         return true;
     return false;
 }
@@ -43,14 +43,11 @@ function computeOutput() {
     if (validateInput()) {
         let decimal64Format = decimalToDec64Float($('#input-significand').val(), $('#input-exponent').val());
 
-        console.log(decimal64Format)
-        console.log(decimal64Format.coefficientContinuation.join(''))
-
         $('#binary-output').val(
             decimal64Format.signBit +
             decimal64Format.combinationField +
             decimal64Format.exponentContinuation +
-            decimal64Format.coefficientContinuation.join(''))
+            decimal64Format.coefficientContinuation.join(''));
         $('#binary-output-sign').val(decimal64Format.signBit);
         $('#binary-output-comb').val(decimal64Format.combinationField);
         $('#binary-output-expo').val(decimal64Format.exponentContinuation);
@@ -81,29 +78,28 @@ function getSignificand() {
         return '_____';
     else if (!isNaN($('#input-significand').val()))
         return $('#input-significand').val() + 'x10';
-    else if ($('#input-significand').val() === 'NaN')
-        return 'NaN';
-    return '_____';
+    return 'NaN';
 }
 
 function getExponent() {
-    if ($('#input-significand').val() === 'NaN')
-        return '';
-    else if (!isNaN($('#input-exponent').val()))
-        return $('#input-exponent').val();
-    else if ($('#input-exponent').val() === '')
+    if (!isNaN($('#input-significand').val())) {
+        if ($('#input-exponent').val() != '') 
+            return $('#input-exponent').val();
         return '__';
-    return '__';
+    }
+    return '';   
 }
 
 function copyToClipboard(opt) {
     if (validateInput()) {
         let text = document.getElementById('hex-output');
-        if (opt === 'BIN')
+        let button = $('#hex-copy');
+        if (opt === 'BIN') {
             text = document.getElementById('binary-output');
-
+            button = $('#binary-copy');
+        }
+            
         text.select();
-
         navigator.clipboard.writeText(text.value);
     }
 }
