@@ -40,8 +40,8 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
     //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
     // console.log(normalizedExponent);
-    if (normalizedExponent > 384 || normalizedExponent < -383)
-        return getInfinityRepresentation(normalizedExponent);
+    if (normalizedExponent > 369)
+        return getInfinityRepresentation(roundedDecimal);
 
     const signBit = getSignBit(roundedDecimal);
     const combinationField = getCombinationField(roundedDecimal, exponentBias);
@@ -94,8 +94,8 @@ function getNaNRepresentation() {
     };
 }
 
-function getInfinityRepresentation(exponent) {
-    if (exponent < 0) {
+function getInfinityRepresentation(decimal) {
+    if (decimal < 0) {
         return {
             signBit: '1',
             combinationField: '11110',
