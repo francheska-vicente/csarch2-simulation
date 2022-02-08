@@ -34,6 +34,8 @@ function initDisplay() {
 function validateInput() {
     if ($('#input-significand').val() != '' && $('#input-exponent').val() != '')
         return true;
+    else if ($('#input-significand').val() != '' && typeof $('#input-significand').val() == 'string')
+        return true; 
     return false;
 }
 
