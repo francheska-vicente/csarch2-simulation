@@ -1,3 +1,5 @@
+const { type } = require('express/lib/response');
+
 /**
  * Converts a given decimal digit to the corresponding densely-packed BCD representation
  * Only accepts 3-digit or less decimal number
@@ -8,7 +10,7 @@ function decToDenselyPackedBCD(decimal) {
     if (typeof decimal != 'number' && typeof decimal != 'string')
         throw 'param must either be num or string';
     if (typeof decimal == 'string' && Number.isNaN(Number(decimal)))
-        throw 'string must be integer convertible';
+        throw `${decimal} string must be integer convertible`;
 
     if (decimal > 999) throw 'only pass at most triple digit';
 
@@ -92,4 +94,8 @@ function convertToPackedBCD(num) {
     }, '');
 
     return bcd.trim();
+}
+
+if (typeof window == 'undefined') {
+    module.exports = decToDenselyPackedBCD;
 }

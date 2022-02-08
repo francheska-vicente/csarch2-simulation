@@ -1,3 +1,7 @@
+if (typeof window == 'undefined') {
+    var decToDenselyPackedBCD = require('./decimal-dense-bcd.js');
+}
+
 const EXPONENT_BIAS = 398;
 
 // DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
@@ -18,21 +22,24 @@ function decimalToDec64Float(decimal, exponent) {
             ? normalizeDecimal(String(decimal))
             : normalizeDecimal(decimal);
 
-    //TODO: Remove after debugging
-    console.log('NORMALIZED: ' + normalizedDecimal);
+    if (getNumberOfDigits(String(decimal)) > 16) {
+        var normalizedExponent =
+            exponent - calculateFloatDisplacement(normalizeDecimal);
+    } else {
+        var normalizedExponent =
+            exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
+    }
 
-    // Rounding-off
     roundedDecimal = String(
         getRoundedOffNum(decimal, normalizedDecimal, ROUNDOFF_DEF)
     );
 
-    //TODO: Remove after debugging
-    console.log('ROUNDEDOFF: ' + roundedDecimal);
+    // console.log('normalized:', roundedDecimal);
 
-    const normalizedExponent =
-        exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
+    // const normalizedExponent =
+    //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
-    console.log(normalizedExponent);
+    // console.log(normalizedExponent);
     if (normalizedExponent > 384 || normalizedExponent < -383)
         return getInfinityRepresentation(normalizedExponent);
 
@@ -66,7 +73,7 @@ function decimalToDec64Float(decimal, exponent) {
         coefficientContinuation: coefficientContinuation,
         hex: hex1 + hex2,
     };
-    console.log(decimal64Format);
+    // console.log(decimal64Format);
     return decimal64Format;
 }
 
@@ -147,25 +154,20 @@ function normalizeDecimal(decimal) {
     // Remove negative sign
     //let normalized = Math.abs(decimal);   // Math.abs automatically rounds numbers above >16 so it's changed to the code below
     let normalized = String(decimal).includes('-')
-        ? String(decimal).slice(1, String(decimal).length)
+        ? String(decimal).slice(1)
         : String(decimal);
     // Remove radix point and start padding 0s if necessary
-    normalized = String(normalized)
-        .replace('.', '')
-        .padStart(16, '0')
-        .substring(0, 16);
+    normalized = String(normalized).replace('.', '').padStart(16, '0');
+
+    //normalize number greater 16 digits
+    if (normalized.length > 16) {
+        normalized =
+            normalized.slice(0, 16) +
+            '.' +
+            normalized.slice(16 - normalized.length);
+    }
     // Add negative sign back
     normalized = decimal >= 0 ? normalized : `-${normalized}`;
-
-    return normalized;
-}
-
-function getPass17thDigit(decimal) {
-    // If negative, get the digits only. Otherwise, keep it as is
-    let normalized = decimal.charAt(0) == '-' ? decimal.substring(1) : decimal;
-    // Remove wholenumber
-    normalized = normalized.replace('.', '').padStart(16, '0').substring(16);
-    if (normalized == '') return '0';
 
     return normalized;
 }
@@ -216,49 +218,61 @@ function calculateFloatDisplacement(decimal) {
 }
 
 function getRoundedOffNum(decimal, normalized, method) {
-    let decTrunc, decCeil, decFloor;
-    // Remove negative sign from unnormalized decimal
-    let tempDec = String(decimal).includes('-')
-        ? String(decimal).slice(1, String(decimal).length)
-        : String(decimal);
-    // If decimal/fraction has more than 16 digits as a whole (excluding negative sign)
-    if (tempDec.length > 17) {
-        fullDec = normalized + '.' + getPass17thDigit(decimal);
-        decTrunc = Math.trunc(parseInt(fullDec));
-        decCeil = Number(normalized) + 1;
-        decFloor = Math.floor(parseInt(fullDec));
-    }
-    // If decimal is a whole number
-    else {
-        decTrunc = Math.trunc(normalized / 10) * 10;
-        decCeil = Math.ceil(normalized / 10) * 10;
-        decFloor = Math.floor(normalized / 10) * 10;
-    }
+    let roundedNumber;
+    const decTrunc = Math.trunc(normalized);
+    const decCeil = Math.ceil(normalized);
+    const decFloor = Math.floor(normalized);
 
     switch (method) {
         case 1:
-            return decTrunc;
+            roundedNumber = decTrunc;
+            break;
         case 2:
-            return decCeil;
+            roundedNumber = decCeil;
+            break;
         case 3:
-            return decFloor;
+            roundedNumber = decFloor;
+            break;
         case 4:
+            roundedNumber = getTiesAwayFromZero(normalized);
+            break;
         case 5:
-            return getTies(decCeil, decFloor, method, normalized);
+            roundedNumber = getTiesToEven(normalized);
+            break;
+    }
+
+    if (String(roundedNumber).includes('-')) {
+        return `-${String(roundedNumber).slice(1).padStart(16, 0)}`;
+    }
+
+    return String(roundedNumber).padStart(16, '0');
+}
+
+function getTiesAwayFromZero(normalized) {
+    return normalized > 0 ? Math.ceil(normalized) : Math.floor(normalized);
+}
+
+function getTiesToEven(normalized) {
+    const [whole, fraction] = normalized.split('.');
+    if (fraction == undefined) return normalized;
+
+    if (`0.${fraction}` == 0.5) {
+        const nextNumber = Number(whole) > 0 ? whole + 1 : whole - 1;
+        const isNextEven = nextNumber % 2 == 0;
+
+        return isNextEven ? nextNumber : whole;
+    } else {
+        return Math.round(normalized);
     }
 }
 
-function getTies(ceiling, floor, method, decimal) {
-    if (getPass17thDigit(decimal) % 5 == 0) {
-        // If it is a tie
-        if (method == 4)
-            // Ties to zero
-            // If negative, round down. Otherwise, round up
-            return decimal < 0 ? floor : ceiling;
-        // Ties to even (If ceiling is even, round up. Otherwise, round down)
-        else return ceiling % 20 == 0 ? ceiling : floor; // temporary value
-    } // Round to nearest number
-    else return Math.round(decimal);
+function getNumberOfDigits(decimal) {
+    let digits = String(decimal).includes('-')
+        ? String(decimal).slice(1, String(decimal).length)
+        : String(decimal);
+
+    digits = digits.replace('.', '');
+    return digits.length;
 }
 
 // Negative exponent
@@ -289,4 +303,6 @@ function getTies(ceiling, floor, method, decimal) {
 // 22 X
 //console.log(decimalToDec64Float('1234567891234567891234', 5));
 
-console.log(decimalToDec64Float('1234567891234567891234', 400));
+// console.log(decimalToDec64Float('1234567890123459', 0));
+
+decimalToDec64Float('1', 0);
