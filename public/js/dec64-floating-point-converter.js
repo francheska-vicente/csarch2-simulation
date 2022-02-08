@@ -40,7 +40,7 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
     //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
     // console.log(normalizedExponent);
-    if (normalizedExponent > 369)
+    if (normalizedExponent > 384)
         return getInfinityRepresentation(roundedDecimal);
 
     const signBit = getSignBit(roundedDecimal);
