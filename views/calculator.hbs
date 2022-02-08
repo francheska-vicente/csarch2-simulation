@@ -9,6 +9,7 @@
 
     <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="/js/clipboard.min.js"></script>
     <script type="text/javascript" src="/js/decimal-dense-bcd.js"></script>
     <script type="text/javascript" src="/js/dec64-floating-point-converter.js"></script>
     <script type="text/javascript" src="/js/calculator.js"></script>
@@ -83,6 +84,13 @@
                         Round Off Method</h4>
                     <hr>
                     <div class="my-3">
+                        <label><strong>Full Binary Representation</strong></label>
+                        <div class="row px-2">
+                            <input type="text" class="col form-control-lg" id="binary-output" readonly>
+                        </div>
+                        
+                    </div>
+                    <div class="my-3">
                         <label><strong>Binary Representation</strong></label>
                         <div class="row px-2">
                             <input type="text" class="mx-1 col form-control-lg" id="binary-output-sign" disabled>
@@ -97,17 +105,17 @@
                             <div for="binary-output-coef" class="mx-1 col-6 form-text">Coefficient Continuation</div>
                         </div>
                     </div>
-                    <input type="text" id="binary-output" hidden>
-                    <button class="ms-auto clipboard-button w-25" id="binary-copy" onclick="copyToClipboard('BIN')">Copy to Clipboard</button>
+                    
+                    <button class="ms-auto clipboard-button w-25" id="binary-copy" data-clipboard-target="#binary-output">Copy to Clipboard</button>
 
                     <hr>
                     <div class="my-3">
                         <label for="hex-output"><strong>Hexadecimal Format</strong></label>
                         <div class="row px-2">
-                            <input type="text" class="col form-control-lg" id="hex-output" disabled>
+                            <input type="text" class="col form-control-lg" id="hex-output" readonly>
                         </div>
                     </div>
-                    <button class="ms-auto clipboard-button w-25" id="hex-copy" onclick="copyToClipboard('HEX')">Copy to Clipboard</button>
+                    <button class="ms-auto clipboard-button w-25" id="hex-copy" data-clipboard-target="#hex-output">Copy to Clipboard</button>
                 </div>
                 
             </div>
