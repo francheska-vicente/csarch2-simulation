@@ -97,7 +97,7 @@ function getNaNRepresentation() {
 function getInfinityRepresentation(decimal) {
     if (decimal < 0) {
         return {
-            signBit: '0',
+            signBit: '1',
             combinationField: '11110',
             exponentContinuation: '00000000',
             coefficientContinuation: [
@@ -111,7 +111,7 @@ function getInfinityRepresentation(decimal) {
         };
     } else {
         return {
-            signBit: '1',
+            signBit: '0',
             combinationField: '11110',
             exponentContinuation: '00000000',
             coefficientContinuation: [
