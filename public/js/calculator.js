@@ -30,7 +30,11 @@ function initDisplay() {
         maskOutput();
     });
 
-    $('[data-bs-toggle="popover"]').popover();
+    $('input[name="rounding"]').change(function () {
+        $('#rom-preview').text($('input[name="rounding"]:checked').siblings('label').text());
+        computeOutput();
+        maskOutput();
+    });
 }
 
 function validateInput() {
@@ -41,7 +45,9 @@ function validateInput() {
 
 function computeOutput() {
     if (validateInput()) {
-        let decimal64Format = decimalToDec64Float($('#input-significand').val(), $('#input-exponent').val());
+        let decimal64Format = decimalToDec64Float($('#input-significand').val(), 
+                                                    $('#input-exponent').val(),
+            $('input[name="rounding"]:checked').siblings('label').text());
 
         $('#binary-output').val(
             decimal64Format.signBit +
