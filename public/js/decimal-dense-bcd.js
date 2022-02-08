@@ -1,5 +1,3 @@
-const { type } = require('express/lib/response');
-
 /**
  * Converts a given decimal digit to the corresponding densely-packed BCD representation
  * Only accepts 3-digit or less decimal number
