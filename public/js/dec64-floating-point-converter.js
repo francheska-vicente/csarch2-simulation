@@ -11,7 +11,7 @@ const ROUNDOFF_DEF = 1;
  * Converts decimal input to its corresponding decimal64 floating point representation
  * based on IEEE-754 2008 standard
  */
-function decimalToDec64Float(decimal, exponent) {
+function decimalToDec64Float(decimal, exponent, roundOffMethod) {
     if (typeof decimal != 'number' && typeof decimal != 'string')
         throw 'param must either be num or string';
     if (typeof decimal == 'string' && Number.isNaN(Number(decimal)))
@@ -31,7 +31,7 @@ function decimalToDec64Float(decimal, exponent) {
     }
 
     roundedDecimal = String(
-        getRoundedOffNum(decimal, normalizedDecimal, ROUNDOFF_DEF)
+        getRoundedOffNum(decimal, normalizedDecimal, roundOffMethod)
     );
 
     // console.log('normalized:', roundedDecimal);
@@ -224,19 +224,19 @@ function getRoundedOffNum(decimal, normalized, method) {
     const decFloor = Math.floor(normalized);
 
     switch (method) {
-        case 1:
+        case 'Truncation':
             roundedNumber = decTrunc;
             break;
-        case 2:
+        case 'Round-up or Ceiling':
             roundedNumber = decCeil;
             break;
-        case 3:
+        case 'Round-down or Floor':
             roundedNumber = decFloor;
             break;
-        case 4:
+        case 'Ties away from Zero':
             roundedNumber = getTiesAwayFromZero(normalized);
             break;
-        case 5:
+        case 'Ties to Even':
             roundedNumber = getTiesToEven(normalized);
             break;
     }
