@@ -83,6 +83,7 @@ function getNaNRepresentation() {
             'XXXXXXXXXX',
             'XXXXXXXXXX',
         ],
+        hex: '7FF8000000000000',
     };
 }
 
@@ -99,6 +100,7 @@ function getInfinityRepresentation(exponent) {
                 'XXXXXXXXXX',
                 'XXXXXXXXXX',
             ],
+            hex: '7FF0000000000000',
         };
     } else
         return {
@@ -112,6 +114,7 @@ function getInfinityRepresentation(exponent) {
                 'XXXXXXXXXX',
                 'XXXXXXXXXX',
             ],
+            hex: 'FFF0000000000000',
         };
 }
 
@@ -285,3 +288,6 @@ function getTies(ceiling, floor, method, decimal) {
 
 // 22 X
 //console.log(decimalToDec64Float('1234567891234567891234', 5));
+
+
+console.log(decimalToDec64Float('1234567891234567891234', 400));
