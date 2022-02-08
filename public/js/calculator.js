@@ -35,6 +35,9 @@ function initDisplay() {
         computeOutput();
         maskOutput();
     });
+
+    new ClipboardJS('#binary-copy');
+    new ClipboardJS('#hex-copy');
 }
 
 function validateInput() {
