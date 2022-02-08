@@ -180,7 +180,7 @@ function getExponentContinuation(exponent) {
 function getCoefficientContinuation(decimal) {
     const last15 = decimal.slice(-15);
 
-    if (decimal == 9999_9999_9999_9999) {
+    if (decimal == 9999_9999_9999_9999 || decimal == -9999_9999_9999_9999) {
         return Array(5)
             .fill(0)
             .map(() => '0011111111');
