@@ -97,20 +97,6 @@ function getNaNRepresentation() {
 function getInfinityRepresentation(decimal) {
     if (decimal < 0) {
         return {
-            signBit: '1',
-            combinationField: '11110',
-            exponentContinuation: '00000000',
-            coefficientContinuation: [
-                '0000000000',
-                '0000000000',
-                '0000000000',
-                '0000000000',
-                '0000000000',
-            ],
-            hex: '7FF0000000000000',
-        };
-    } else
-        return {
             signBit: '0',
             combinationField: '11110',
             exponentContinuation: '00000000',
@@ -123,6 +109,21 @@ function getInfinityRepresentation(decimal) {
             ],
             hex: 'FFF0000000000000',
         };
+    } else {
+        return {
+            signBit: '1',
+            combinationField: '11110',
+            exponentContinuation: '00000000',
+            coefficientContinuation: [
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+            ],
+            hex: '7FF0000000000000',
+        };
+    }
 }
 
 function getSignBit(decimal) {
