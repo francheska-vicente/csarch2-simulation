@@ -73,16 +73,17 @@ function decimalToDec64Float(decimal, exponent) {
 function getNaNRepresentation() {
     return {
         //quiet
-        signBit: 'X',
+        signBit: '0',
         combinationField: '11111',
-        exponentContinuation: 'XXXXXXXX',
+        exponentContinuation: '00000000',
         coefficientContinuation: [
-            'XXXXXXXXXX',
-            'XXXXXXXXXX',
-            'XXXXXXXXXX',
-            'XXXXXXXXXX',
-            'XXXXXXXXXX',
+            '0000000000',
+            '0000000000',
+            '0000000000',
+            '0000000000',
+            '0000000000',
         ],
+        hex: '7FF8000000000000',
     };
 }
 
@@ -91,27 +92,29 @@ function getInfinityRepresentation(exponent) {
         return {
             signBit: '1',
             combinationField: '11110',
-            exponentContinuation: 'XXXXXXXX',
+            exponentContinuation: '00000000',
             coefficientContinuation: [
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
             ],
+            hex: '7FF0000000000000',
         };
     } else
         return {
             signBit: '0',
             combinationField: '11110',
-            exponentContinuation: 'XXXXXXXX',
+            exponentContinuation: '00000000',
             coefficientContinuation: [
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
-                'XXXXXXXXXX',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
+                '0000000000',
             ],
+            hex: 'FFF0000000000000',
         };
 }
 
@@ -285,3 +288,5 @@ function getTies(ceiling, floor, method, decimal) {
 
 // 22 X
 //console.log(decimalToDec64Float('1234567891234567891234', 5));
+
+console.log(decimalToDec64Float('1234567891234567891234', 400));

@@ -38,8 +38,10 @@ function initDisplay() {
 }
 
 function validateInput() {
-    if (!isNaN($('#input-significand').val()) && !isNaN($('#input-exponent').val()))
+    if ($('#input-significand').val() != '' && $('#input-exponent').val() != '')
         return true;
+    else if ($('#input-significand').val() != '' && typeof $('#input-significand').val() == 'string')
+        return true; 
     return false;
 }
 
@@ -99,10 +101,8 @@ function getExponent() {
 function copyToClipboard(opt) {
     if (validateInput()) {
         let text = document.getElementById('hex-output');
-        let button = $('#hex-copy');
         if (opt === 'BIN') {
             text = document.getElementById('binary-output');
-            button = $('#binary-copy');
         }
             
         text.select();
