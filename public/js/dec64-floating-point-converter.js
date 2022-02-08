@@ -179,6 +179,12 @@ function getExponentContinuation(exponent) {
 function getCoefficientContinuation(decimal) {
     const last15 = decimal.slice(-15);
 
+    if (decimal == 9999_9999_9999_9999) {
+        return Array(5)
+            .fill(0)
+            .map(() => '0011111111');
+    }
+
     const partitionedLast15 = last15.match(/.{1,3}/g);
     const partitionedDPD = partitionedLast15.map((threeDigits) =>
         decToDenselyPackedBCD(threeDigits)
