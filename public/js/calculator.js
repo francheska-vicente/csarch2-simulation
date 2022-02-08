@@ -10,7 +10,7 @@ function loadExampleData() {
     $('#input-exponent').val('5');
     $('#dec-preview').text('127.0x10');
     $('#exp-preview').text('5');
-    $('#round-1').prop("checked", true);
+    $('#round-1').prop('checked', true);
     computeOutput();
     maskOutput();
 }
@@ -34,28 +34,35 @@ function initDisplay() {
 function validateInput() {
     if ($('#input-significand').val() != '' && $('#input-exponent').val() != '')
         return true;
-    else if ($('#input-significand').val() != '' && typeof $('#input-significand').val() == 'string')
-        return true; 
+    else if (
+        $('#input-significand').val() != '' &&
+        typeof $('#input-significand').val() == 'string'
+    )
+        return true;
     return false;
 }
 
 function computeOutput() {
     if (validateInput()) {
-        let decimal64Format = decimalToDec64Float($('#input-significand').val(), $('#input-exponent').val());
+        let decimal64Format = decimalToDec64Float(
+            $('#input-significand').val(),
+            $('#input-exponent').val()
+        );
 
         $('#binary-output').val(
             decimal64Format.signBit +
-            decimal64Format.combinationField +
-            decimal64Format.exponentContinuation +
-            decimal64Format.coefficientContinuation.join(''));
+                decimal64Format.combinationField +
+                decimal64Format.exponentContinuation +
+                decimal64Format.coefficientContinuation.join('')
+        );
         $('#binary-output-sign').val(decimal64Format.signBit);
         $('#binary-output-comb').val(decimal64Format.combinationField);
         $('#binary-output-expo').val(decimal64Format.exponentContinuation);
-        $('#binary-output-coef').val(decimal64Format.coefficientContinuation.join(''));
+        $('#binary-output-coef').val(
+            decimal64Format.coefficientContinuation.join('')
+        );
         $('#hex-output').val(decimal64Format.hex);
-
-    }
-    else {
+    } else {
         $('#binary-output-sign').val('');
         $('#binary-output-comb').val('');
         $('#binary-output-expo').val('');
@@ -70,12 +77,13 @@ function maskOutput() {
     $('#binary-output-coef').unmask();
     $('#binary-output-comb').mask('00 000');
     $('#binary-output-expo').mask('AAAA AAAA');
-    $('#binary-output-coef').mask('AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA');
+    $('#binary-output-coef').mask(
+        'AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA'
+    );
 }
 
 function getSignificand() {
-    if ($('#input-significand').val() === '')
-        return '_____';
+    if ($('#input-significand').val() === '') return '_____';
     else if (!isNaN($('#input-significand').val()))
         return $('#input-significand').val() + 'x10';
     return 'NaN';
@@ -83,11 +91,10 @@ function getSignificand() {
 
 function getExponent() {
     if (!isNaN($('#input-significand').val())) {
-        if ($('#input-exponent').val() != '') 
-            return $('#input-exponent').val();
+        if ($('#input-exponent').val() != '') return $('#input-exponent').val();
         return '__';
     }
-    return '';   
+    return '';
 }
 
 function copyToClipboard(opt) {
@@ -96,7 +103,7 @@ function copyToClipboard(opt) {
         if (opt === 'BIN') {
             text = document.getElementById('binary-output');
         }
-            
+
         text.select();
         navigator.clipboard.writeText(text.value);
     }
