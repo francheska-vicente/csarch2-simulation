@@ -51,7 +51,7 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
     if (normalizedExponent > 369)
         return getInfinityRepresentation(roundedDecimal);
 
-    const signBit = getSignBit(roundedDecimal);
+    const signBit = getSignBit(decimal);
     const combinationField = getCombinationField(roundedDecimal, exponentBias);
     const exponentContinuation = getExponentContinuation(exponentBias);
     const coefficientContinuation = getCoefficientContinuation(roundedDecimal);
@@ -136,6 +136,10 @@ function getInfinityRepresentation(decimal) {
 
 function getSignBit(decimal) {
     const num = Number(decimal);
+    console.log('decimal', decimal);
+    console.log(num);
+    if (1 / num == -Infinity) return 1;
+
     return num >= 0 ? 0 : 1;
 }
 
@@ -175,7 +179,7 @@ function normalizeDecimal(decimal) {
             '.' +
             normalized.slice(16 - normalized.length);
     }
-    // Add negative sign back
+
     normalized = decimal >= 0 ? normalized : `-${normalized}`;
 
     return normalized;
