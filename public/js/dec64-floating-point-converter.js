@@ -44,8 +44,6 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
         getRoundedOffNum(decimal, normalizedDecimal, roundOffMethod)
     );
 
-    console.log(roundedDecimal);
-
     // const normalizedExponent =
     //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     const exponentBias = normalizedExponent + EXPONENT_BIAS;
@@ -277,7 +275,7 @@ function getTrunc(normalized) {
 function getCeiling(normalized) {
     const [whole, fraction] = normalized.split('.');
     if (fraction == undefined || fraction == 0 || normalized.includes('-'))
-        return Number(whole);
+        return whole;
 
     return Number(whole) + 1;
 }
@@ -285,7 +283,7 @@ function getCeiling(normalized) {
 function getFloor(normalized) {
     const [whole, fraction] = normalized.split('.');
     if (fraction == undefined || fraction == 0 || !normalized.includes('-'))
-        return Number(whole);
+        return whole;
 
     return Number(whole) - 1;
 }
@@ -296,13 +294,13 @@ function getTiesAwayFromZero(normalized) {
 
 function getTiesToEven(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined) return Number(whole);
+    if (fraction == undefined) return whole;
 
     if (`0.${fraction}` == 0.5) {
         const nextNumber = Number(whole) > 0 ? whole + 1 : whole - 1;
         const isNextEven = nextNumber % 2 == 0;
 
-        return isNextEven ? nextNumber : Number(whole);
+        return isNextEven ? nextNumber : whole;
     } else {
         return Math.round(normalized);
     }
