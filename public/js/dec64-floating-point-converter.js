@@ -257,14 +257,14 @@ function getRoundedOffNum(decimal, normalized, method = 'Round-up or Ceiling') {
 
 function getCeiling(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined) return normalized;
+    if (fraction == undefined || fraction == 0) return whole;
 
     return Number(whole) + 1;
 }
 
 function getFloor(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined) return normalized;
+    if (fraction == undefined || fraction == 0) return whole;
 
     return Number(whole) - 1;
 }
@@ -275,7 +275,7 @@ function getTiesAwayFromZero(normalized) {
 
 function getTiesToEven(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined) return normalized;
+    if (fraction == undefined) return whole;
 
     if (`0.${fraction}` == 0.5) {
         const nextNumber = Number(whole) > 0 ? whole + 1 : whole - 1;
@@ -326,4 +326,4 @@ function getNumberOfDigits(decimal) {
 
 // console.log(decimalToDec64Float('1234567890123459', 0));
 
-console.log(decimalToDec64Float('7123456123456124', 1));
+console.log(decimalToDec64Float('71234561234561200', 1));
