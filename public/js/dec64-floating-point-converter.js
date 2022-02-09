@@ -269,7 +269,7 @@ function getRoundedOffNum(decimal, normalized, method = 'Round-down or Floor') {
 
 function getTrunc(normalized) {
     const [whole, fraction] = normalized.split('.');
-    return Number(whole);
+    return whole;
 }
 
 function getCeiling(normalized) {
@@ -289,7 +289,7 @@ function getFloor(normalized) {
 }
 
 function getTiesAwayFromZero(normalized) {
-    return normalized > 0 ? Math.ceil(normalized) : Math.floor(normalized);
+    return normalized > 0 ? getCeiling(normalized) : getFloor(normalized);
 }
 
 function getTiesToEven(normalized) {
