@@ -5,7 +5,7 @@ if (typeof window == 'undefined') {
 const EXPONENT_BIAS = 398;
 
 // DEFAULT (1 = Truncation, 2 = Ceiling, 3 = Floor, 4 = Ties to Zero, 5 = Ties to Even)
-const ROUNDOFF_DEF = 1;
+const ROUNDOFF_DEF = 'Round-up or Ceiling';
 
 /**
  * Converts decimal input to its corresponding decimal64 floating point representation
@@ -34,7 +34,7 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
         getRoundedOffNum(decimal, normalizedDecimal, roundOffMethod)
     );
 
-    // console.log('normalized:', roundedDecimal);
+    console.log('rounded:', roundedDecimal);
 
     // const normalizedExponent =
     //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
@@ -224,7 +224,7 @@ function calculateFloatDisplacement(decimal) {
     return afterRadixPoint.length; // e.g. 123.456
 }
 
-function getRoundedOffNum(decimal, normalized, method) {
+function getRoundedOffNum(decimal, normalized, method = 'Round-up or Ceiling') {
     let roundedNumber;
     const decTrunc = Math.trunc(normalized);
     const decCeil = Math.ceil(normalized);
@@ -235,10 +235,10 @@ function getRoundedOffNum(decimal, normalized, method) {
             roundedNumber = decTrunc;
             break;
         case 'Round-up or Ceiling':
-            roundedNumber = decCeil;
+            roundedNumber = getCeiling(normalized);
             break;
         case 'Round-down or Floor':
-            roundedNumber = decFloor;
+            roundedNumber = getFloor(normalized);
             break;
         case 'Ties away from Zero':
             roundedNumber = getTiesAwayFromZero(normalized);
@@ -253,6 +253,20 @@ function getRoundedOffNum(decimal, normalized, method) {
     }
 
     return String(roundedNumber).padStart(16, '0');
+}
+
+function getCeiling(normalized) {
+    const [whole, fraction] = normalized.split('.');
+    if (fraction == undefined) return normalized;
+
+    return Number(whole) + 1;
+}
+
+function getFloor(normalized) {
+    const [whole, fraction] = normalized.split('.');
+    if (fraction == undefined) return normalized;
+
+    return Number(whole) - 1;
 }
 
 function getTiesAwayFromZero(normalized) {
@@ -312,4 +326,4 @@ function getNumberOfDigits(decimal) {
 
 // console.log(decimalToDec64Float('1234567890123459', 0));
 
-decimalToDec64Float('1', 0);
+console.log(decimalToDec64Float('7123456123456124', 1));
