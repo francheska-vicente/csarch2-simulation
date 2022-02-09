@@ -136,8 +136,6 @@ function getInfinityRepresentation(decimal) {
 
 function getSignBit(decimal) {
     const num = Number(decimal);
-    console.log('decimal', decimal);
-    console.log(num);
     if (1 / num == -Infinity) return 1;
 
     return num >= 0 ? 0 : 1;
@@ -198,10 +196,13 @@ function getCoefficientContinuation(decimal) {
             .map(() => '0011111111');
     }
 
+    // console.log('decimal', decimal);
+    // console.log('last 15', last15);
     const partitionedLast15 = last15.match(/.{1,3}/g);
     const partitionedDPD = partitionedLast15.map((threeDigits) =>
         decToDenselyPackedBCD(threeDigits)
     );
+    // console.log(partitionedDPD);
     return partitionedDPD;
 }
 
@@ -304,7 +305,8 @@ function getTiesToEven(normalized) {
     if (fraction == undefined) return whole;
 
     if (`0.${fraction}` == 0.5) {
-        const nextNumber = Number(whole) > 0 ? whole + 1 : whole - 1;
+        const nextNumber =
+            Number(whole) > 0 ? Number(whole) + 1 : Number(whole) - 1;
         const isNextEven = nextNumber % 2 == 0;
 
         return isNextEven ? nextNumber : whole;
