@@ -224,7 +224,7 @@ function calculateFloatDisplacement(decimal) {
     return afterRadixPoint.length; // e.g. 123.456
 }
 
-function getRoundedOffNum(decimal, normalized, method = 'Round-up or Ceiling') {
+function getRoundedOffNum(decimal, normalized, method = 'Round-down or Floor') {
     let roundedNumber;
     const decTrunc = Math.trunc(normalized);
     const decCeil = Math.ceil(normalized);
@@ -257,14 +257,16 @@ function getRoundedOffNum(decimal, normalized, method = 'Round-up or Ceiling') {
 
 function getCeiling(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined || fraction == 0) return whole;
+    if (fraction == undefined || fraction == 0 || normalized.includes('-'))
+        return whole;
 
     return Number(whole) + 1;
 }
 
 function getFloor(normalized) {
     const [whole, fraction] = normalized.split('.');
-    if (fraction == undefined || fraction == 0) return whole;
+    if (fraction == undefined || fraction == 0 || !normalized.includes('-'))
+        return whole;
 
     return Number(whole) - 1;
 }
@@ -326,4 +328,4 @@ function getNumberOfDigits(decimal) {
 
 // console.log(decimalToDec64Float('1234567890123459', 0));
 
-console.log(decimalToDec64Float('71234561234561200', 1));
+console.log(decimalToDec64Float('-71234561234561211', 1));
