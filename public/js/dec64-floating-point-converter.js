@@ -289,7 +289,14 @@ function getFloor(normalized) {
 }
 
 function getTiesAwayFromZero(normalized) {
-    return normalized > 0 ? getCeiling(normalized) : getFloor(normalized);
+    const [whole, fraction] = normalized.split('.');
+    if (fraction == undefined) return whole;
+
+    if (`0.${fraction}` == 0.5) {
+        return normalized > 0 ? getCeiling(normalized) : getFloor(normalized);
+    } else {
+        return Math.round(normalized);
+    }
 }
 
 function getTiesToEven(normalized) {
