@@ -244,7 +244,7 @@ function getRoundedOffNum(decimal, normalized, method = 'Round-down or Floor') {
 
     switch (method) {
         case 'Truncation':
-            roundedNumber = decTrunc;
+            roundedNumber = getTrunc(normalized);
             break;
         case 'Round-up or Ceiling':
             roundedNumber = getCeiling(normalized);
@@ -265,6 +265,11 @@ function getRoundedOffNum(decimal, normalized, method = 'Round-down or Floor') {
     }
 
     return String(roundedNumber).padStart(16, '0');
+}
+
+function getTrunc(normalized) {
+    const [whole, fraction] = normalized.split('.');
+    return Number(whole);
 }
 
 function getCeiling(normalized) {
