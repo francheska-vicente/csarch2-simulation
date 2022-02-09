@@ -90,7 +90,7 @@ function getNaNRepresentation() {
             '0000000000',
             '0000000000',
         ],
-        hex: '7FF8000000000000',
+        hex: '7C00000000000000',
     };
 }
 
@@ -107,7 +107,7 @@ function getInfinityRepresentation(decimal) {
                 '0000000000',
                 '0000000000',
             ],
-            hex: 'FFF0000000000000',
+            hex: 'F800000000000000',
         };
     } else {
         return {
@@ -121,7 +121,7 @@ function getInfinityRepresentation(decimal) {
                 '0000000000',
                 '0000000000',
             ],
-            hex: '7FF0000000000000',
+            hex: '7800000000000000',
         };
     }
 }
