@@ -22,13 +22,23 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
             ? normalizeDecimal(String(decimal))
             : normalizeDecimal(decimal);
 
+    const [beforeRadixPoint, afterRadixPoint] = String(decimal).split('.');
+    const offset = Math.max(getNumberOfDigits(beforeRadixPoint) - 16, 0);
+
     if (getNumberOfDigits(String(decimal)) > 16) {
         var normalizedExponent =
-            exponent - calculateFloatDisplacement(normalizedDecimal);
+            exponent - calculateFloatDisplacement(normalizedDecimal) + offset;
     } else {
         var normalizedExponent =
             exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
     }
+
+    // console.log('offset: ', offset);
+    // console.log(
+    //     'without offset: ',
+    //     exponent - calculateFloatDisplacement(String(decimal))
+    // );
+    console.log('exponent: ', normalizedExponent);
 
     roundedDecimal = String(
         getRoundedOffNum(decimal, normalizedDecimal, roundOffMethod)
@@ -326,4 +336,4 @@ function getNumberOfDigits(decimal) {
 
 // console.log(decimalToDec64Float('1234567890123459', 0));
 
-console.log(decimalToDec64Float('71234561234561234', 1));
+console.log(decimalToDec64Float('123', 0));
