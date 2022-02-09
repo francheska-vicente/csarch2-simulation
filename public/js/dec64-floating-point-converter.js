@@ -103,7 +103,7 @@ function getNaNRepresentation() {
 }
 
 function getInfinityRepresentation(decimal) {
-    if (decimal < 0) {
+    if (decimal < 0 || 1 / decimal == -Infinity) {
         return {
             signBit: '1',
             combinationField: '11110',
