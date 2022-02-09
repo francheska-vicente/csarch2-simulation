@@ -24,7 +24,7 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
 
     if (getNumberOfDigits(String(decimal)) > 16) {
         var normalizedExponent =
-            exponent - calculateFloatDisplacement(normalizeDecimal);
+            exponent - calculateFloatDisplacement(normalizedDecimal);
     } else {
         var normalizedExponent =
             exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
@@ -33,8 +33,6 @@ function decimalToDec64Float(decimal, exponent, roundOffMethod) {
     roundedDecimal = String(
         getRoundedOffNum(decimal, normalizedDecimal, roundOffMethod)
     );
-
-    console.log('rounded:', roundedDecimal);
 
     // const normalizedExponent =
     //     exponent - calculateFloatDisplacement(String(decimal)); // right: subtract; left: add
@@ -328,4 +326,4 @@ function getNumberOfDigits(decimal) {
 
 // console.log(decimalToDec64Float('1234567890123459', 0));
 
-console.log(decimalToDec64Float('-71234561234561211', 1));
+console.log(decimalToDec64Float('71234561234561234', 1));
